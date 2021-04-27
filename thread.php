@@ -60,7 +60,7 @@
                 Do not post “offensive” posts, links or images.
                 Do not cross post questions.
                 Remain respectful of other members at all time</p>
-            <p><b>Posted by: Saif</b></p>
+            <p>Posted by: <b>Saif</b></p>
         </div>
     </div>
 

@@ -100,6 +100,7 @@
             echo ' <div class="media d-flex">
             <img src="img/default.png" width="50px" height="50px" class="me-3" alt="...">
             <div class="media-body">
+                <p class="fw-bold my-0">Anonymous user</p>
                 <h5 class="mt-0"><a class="text-dark" href="thread.php?threadid=' . $id . '">' . $title . '</a></h5>
                 <p>' . $desc . '</p>
             </div>
