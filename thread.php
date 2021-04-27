@@ -27,6 +27,26 @@
     }
     ?>
 
+    <?php
+    $showAlert = false;
+    $method = $_SERVER['REQUEST_METHOD'];
+    if ($method == 'POST') {
+        // Insert into thread into db
+        $comment = $_POST['comment'];
+        $sql = "INSERT INTO `comments` (`comment_content`, `thread_id`, `comment_by`, `comment_time`) VALUES ( '$comment', '$id', '0', current_timestamp());";
+        $result = mysqli_query($conn, $sql);
+        $showAlert = true;
+        if ($showAlert) {
+            echo '
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> Your comment has been added!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            ';
+        }
+    }
+    ?>
+
 
 
     <!-- Category container starts here -->
@@ -45,37 +65,48 @@
     </div>
 
     <div class="container">
+        <h1 class="py-2">Post your comment</h1>
+
+        <form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="POST">
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Type your comment..</label>
+                <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Post</button>
+        </form>
+    </div>
+
+    <div class="container">
         <h1 class="py-2">Discussions</h1>
         <?php
-        // $noResult = true;
-        // $id = $_GET['catid'];
-        // $sql = "SELECT * FROM `threads` WHERE thread_cat_id=$id";
-        // $result = mysqli_query($conn, $sql);
-        // while ($row = mysqli_fetch_assoc($result)) {
-        //     $noResult = false;
-        //     $id = $row['thread_id'];
-        //     $title = $row['thread_title'];
-        //     $desc = $row['thread_desc'];
+        $noResult = true;
+        $id = $_GET['threadid'];
+        $sql = "SELECT * FROM `comments` WHERE thread_id=$id";
+        $result = mysqli_query($conn, $sql);
+        while ($row = mysqli_fetch_assoc($result)) {
+            $noResult = false;
+            $id = $row['comment_id'];
+            $content = $row['comment_content'];
 
-        //     echo ' <div class="media d-flex">
-        //         <img src="img/default.png" width="50px" height="50px" class="me-3" alt="...">
-        //         <div class="media-body">
-        //             <h5 class="mt-0"><a class="text-dark" href="thread.php?thread_id=' . $id . '">' . $title . '</a></h5>
-        //             <p>' . $desc . '</p>
-        //         </div>
-        //     </div>
-        // </div>';
-        // }
+            echo ' <div class="media d-flex">
+                <img src="img/default.png" width="50px" height="50px" class="me-3" alt="...">
+                <div class="media-body">
+                <p class="fw-bold my-0">Anonymous user</p>
+                    <p>' . $content . '</p>
+                </div>
+            </div>
+        </div>';
+        }
 
-        // if ($noResult) {
-        //     echo '
-        //     <div class="container my-4 text-white">
-        //     <div class="bg-secondary rounded p-4">
-        //         <h1 class="display-4">No Questions yet..</h1>
-        //         <p class="fs-6"> Be the first person to ask..</p>
-        //     </div>
-        // </div>';
-        // }
+        if ($noResult) {
+            echo '
+            <div class="container my-4 text-white">
+            <div class="bg-secondary rounded p-4">
+                <h1 class="display-4">No Comments yet..</h1>
+                <p class="fs-6"> Be the first person to ask..</p>
+            </div>
+        </div>';
+        }
         ?>
 
 

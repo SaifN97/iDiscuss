@@ -28,6 +28,27 @@
     ?>
 
 
+    <?php
+    $showAlert = false;
+    $method = $_SERVER['REQUEST_METHOD'];
+    if ($method == 'POST') {
+        // Insert into thread into db
+        $th_title = $_POST['title'];
+        $th_desc = $_POST['desc'];
+        $sql = "INSERT INTO `threads` (`thread_title`, `thread_desc`, `thread_cat_id`, `thread_user_id`, `timestamp`) VALUES ('$th_title', '$th_desc', '$id', '0', current_timestamp());";
+        $result = mysqli_query($conn, $sql);
+        $showAlert = true;
+        if ($showAlert) {
+            echo '
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> Your thread has been added! Please wait for community to respond.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            ';
+        }
+    }
+    ?>
+
 
     <!-- Category container starts here -->
     <div class="container my-4 text-white">
@@ -49,10 +70,10 @@
     <div class="container">
         <h1 class="py-2">Start a Discussion</h1>
 
-        <form>
+        <form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="POST">
             <div class="mb-3">
                 <label for="title" class="form-label">Problem title</label>
-                <input type="email" class="form-control" id="title" name="title" aria-describedby="title">
+                <input type="text" class="form-control" id="title" name="title" aria-describedby="title">
                 <div id="emailHelp" class="form-text">Keep you title as short and crisp as possible.</div>
             </div>
             <div class="mb-3">
