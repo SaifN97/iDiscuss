@@ -35,7 +35,8 @@
         // Insert into thread into db
         $th_title = $_POST['title'];
         $th_desc = $_POST['desc'];
-        $sql = "INSERT INTO `threads` (`thread_title`, `thread_desc`, `thread_cat_id`, `thread_user_id`, `timestamp`) VALUES ('$th_title', '$th_desc', '$id', '0', current_timestamp());";
+        $sno = $_POST['sno'];
+        $sql = "INSERT INTO `threads` (`thread_title`, `thread_desc`, `thread_cat_id`, `thread_user_id`, `timestamp`) VALUES ('$th_title', '$th_desc', '$id', '$sno', current_timestamp());";
         $result = mysqli_query($conn, $sql);
         $showAlert = true;
         if ($showAlert) {
@@ -66,11 +67,13 @@
             <a class="btn btn-success btn-lg" href="#" role="button">Learn more</a>
         </div>
     </div>
+    <?php
 
-    <div class="container">
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == 'true') {
+        echo '<div class="container">
         <h1 class="py-2">Start a Discussion</h1>
 
-        <form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="POST">
+        <form action="' . $_SERVER["REQUEST_URI"] . '" method="POST">
             <div class="mb-3">
                 <label for="title" class="form-label">Problem title</label>
                 <input type="text" class="form-control" id="title" name="title" aria-describedby="title">
@@ -79,11 +82,20 @@
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Ellaborate your concern..</label>
                 <textarea class="form-control" id="desc" name="desc" rows="3"></textarea>
+                <input type="hidden" name="sno" value="' . $_SESSION['sno'] . '">
             </div>
             <button type="submit" class="btn btn-success">Submit</button>
         </form>
-    </div>
+    </div>';
+    } else {
+        echo '
+        <div class="container">
+        <h1 class="py-2">Start a Discussion</h1>
+    <p class="lead">You are not logged in.. Please login to start a discussion..</p>
+</div>';
+    }
 
+    ?>
     <div class="container">
         <h1 class="py-2">Browse Questions</h1>
         <?php
@@ -96,14 +108,18 @@
             $id = $row['thread_id'];
             $title = $row['thread_title'];
             $desc = $row['thread_desc'];
+            $thread_user_id = $row['thread_user_id'];
+            $sql2 = "select user_email from `users` where sno='$thread_user_id'";
+            $result2 = mysqli_query($conn, $sql2);
+            $row2 = mysqli_fetch_assoc($result2);
 
             echo ' <div class="media d-flex">
             <img src="img/default.png" width="50px" height="50px" class="me-3" alt="...">
             <div class="media-body">
-                <p class="fw-bold my-0">Anonymous user</p>
-                <h5 class="mt-0"><a class="text-dark" href="thread.php?threadid=' . $id . '">' . $title . '</a></h5>
-                <p>' . $desc . '</p>
+            <h5 class="mt-0"><a class="text-dark" href="thread.php?threadid=' . $id . '">' . $title . '</a></h5>
+            <p>' . $desc . '</p>
             </div>
+            <p class="my-0">Asked by <b>' . $row2['user_email'] . '</b></p>
         </div>
     </div>';
         }

@@ -33,7 +33,8 @@
     if ($method == 'POST') {
         // Insert into thread into db
         $comment = $_POST['comment'];
-        $sql = "INSERT INTO `comments` (`comment_content`, `thread_id`, `comment_by`, `comment_time`) VALUES ( '$comment', '$id', '0', current_timestamp());";
+        $sno = $_POST['sno'];
+        $sql = "INSERT INTO `comments` (`comment_content`, `thread_id`, `comment_by`, `comment_time`) VALUES ( '$comment', '$id', '$sno', current_timestamp());";
         $result = mysqli_query($conn, $sql);
         $showAlert = true;
         if ($showAlert) {
@@ -64,18 +65,29 @@
         </div>
     </div>
 
+    <?php
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == 'true') {
+        echo '
     <div class="container">
-        <h1 class="py-2">Post your comment</h1>
+        <h1 class="py-2">Post a Comment</h1>
 
-        <form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="POST">
+        <form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Type your comment..</label>
                 <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+                <input type="hidden" name="sno" value="' . $_SESSION['sno'] . '">
             </div>
             <button type="submit" class="btn btn-success">Post</button>
         </form>
-    </div>
-
+    </div>';
+    } else {
+        echo '
+        <div class="container">
+        <h1 class="py-2">Post your comment</h1>
+    <p class="lead">You are not logged in.. Please login to comment on this post..</p>
+</div>';
+    }
+    ?>
     <div class="container">
         <h1 class="py-2">Discussions</h1>
         <?php
@@ -87,11 +99,15 @@
             $noResult = false;
             $id = $row['comment_id'];
             $content = $row['comment_content'];
+            $thread_user_id = $row['comment_by'];
+            $sql2 = "select user_email from `users` where sno='$thread_user_id'";
+            $result2 = mysqli_query($conn, $sql2);
+            $row2 = mysqli_fetch_assoc($result2);
 
             echo ' <div class="media d-flex">
                 <img src="img/default.png" width="50px" height="50px" class="me-3" alt="...">
                 <div class="media-body">
-                <p class="fw-bold my-0">Anonymous user</p>
+                <p class="fw-bold my-0">' . $row2['user_email'] . '</p>
                     <p>' . $content . '</p>
                 </div>
             </div>
