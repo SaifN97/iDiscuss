@@ -33,8 +33,8 @@ echo '</ul>
                     <a class="nav-link" href="/contact.php" tabindex="-1">Contact</a>
                 </li>
             </ul>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex" action="search.php" method="GET">
+                <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-success" type="submit">Search</button>
                 </form>';
 
