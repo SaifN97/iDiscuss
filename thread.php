@@ -13,8 +13,8 @@
 </head>
 
 <body>
-    <?php include 'partials/_header.php'; ?>
     <?php include 'partials/_dbconnect.php'; ?>
+    <?php include 'partials/_header.php'; ?>
 
 
     <?php
@@ -24,6 +24,11 @@
     while ($row = mysqli_fetch_assoc($result)) {
         $title = $row['thread_title'];
         $desc = $row['thread_desc'];
+        $thread_user_id = $row['thread_user_id'];
+        $sql2 = "select user_email from `users` where sno='$thread_user_id'";
+        $result2 = mysqli_query($conn, $sql2);
+        $row2 = mysqli_fetch_assoc($result2);
+        $posted_by = $row2['user_email'];
     }
     ?>
 
@@ -33,6 +38,8 @@
     if ($method == 'POST') {
         // Insert into thread into db
         $comment = $_POST['comment'];
+        $comment = str_replace('<', '&lt', $comment);
+        $comment = str_replace('>', '&gt', $comment);
         $sno = $_POST['sno'];
         $sql = "INSERT INTO `comments` (`comment_content`, `thread_id`, `comment_by`, `comment_time`) VALUES ( '$comment', '$id', '$sno', current_timestamp());";
         $result = mysqli_query($conn, $sql);
@@ -61,7 +68,7 @@
                 Do not post “offensive” posts, links or images.
                 Do not cross post questions.
                 Remain respectful of other members at all time</p>
-            <p>Posted by: <b>Saif</b></p>
+            <p>Posted by: <b><?php echo $posted_by ?></b></p>
         </div>
     </div>
 
